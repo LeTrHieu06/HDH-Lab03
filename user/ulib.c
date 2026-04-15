@@ -2,7 +2,7 @@
 #include "kernel/stat.h"
 #include "kernel/fcntl.h"
 #include "user/user.h"
-
+#include "usyscall.h"
 //
 // wrapper so that it's OK if main() does not call exit().
 //
@@ -31,6 +31,11 @@ strcmp(const char *p, const char *q)
   while(*p && *p == *q)
     p++, q++;
   return (uchar)*p - (uchar)*q;
+}
+
+int ugetpid(void) {
+  struct usyscall *u = (struct usyscall *)USYSCALL;
+  return u->pid;
 }
 
 uint
