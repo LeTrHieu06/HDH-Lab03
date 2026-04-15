@@ -1,0 +1,12 @@
+Ngoài getpid(), một số system call khác trong xv6 có thể được tăng tốc bằng cách sử dụng trang chia sẻ giữa kernel và user.
+Ví dụ: uptime() - vốn chỉ đọc biến ticks toàn cục mà kernel đã duy trì sẵn."
+
+Nguyên nhân là vì các system call này chỉ đơn giản trả về các giá trị đã được kernel lưu trữ sẵn 
+(như số tick hệ thống hoặc PID của tiến trình cha), không yêu cầu thực hiện các thao tác phức tạp hay truy cập tài nguyên bên ngoài.
+
+Bằng cách lưu các giá trị này trong một trang nhớ được ánh xạ vào không gian người dùng với quyền chỉ đọc,
+tiến trình user có thể truy cập trực tiếp mà không cần chuyển sang chế độ kernel. Điều này giúp giảm chi phí chuyển ngữ cảnh 
+(context switch) giữa user mode và kernel mode, từ đó cải thiện hiệu năng.
+
+Tuy nhiên, phương pháp này không thể áp dụng cho các system call phức tạp như fork, exec, read, write vì các lệnh này cần kernel 
+thực thi logic, quản lý tài nguyên hoặc tương tác với phần cứng
